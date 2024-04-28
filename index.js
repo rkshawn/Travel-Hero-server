@@ -15,7 +15,7 @@ app.get('/',(req,res)=>{
 })
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.s6hdjpg.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri)
+
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -30,6 +30,25 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const travelDataCollection = client.db('TravelDB').collection('TravelData')
+
+  app.post('/traveldata',async(req,res)=>{
+    const newTravelData = req.body;
+    console.log(newTravelData);
+    const result = await travelDataCollection.insertOne(newTravelData);
+    res.send(result);
+
+  })
+
+  app.get('/traveldata',async(req,res)=>{
+    const cursor = travelDataCollection.find();
+    const result = await cursor.toArray();
+    res.send(result)
+  })
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
