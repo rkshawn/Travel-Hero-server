@@ -4,7 +4,7 @@ require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 //middle ware
 app.use(cors());
@@ -40,14 +40,20 @@ async function run() {
     res.send(result);
 
   })
-
+//get all the travel data
   app.get('/traveldata',async(req,res)=>{
     const cursor = travelDataCollection.find();
     const result = await cursor.toArray();
     res.send(result)
   })
 
-
+//get single travel data
+app.get('/traveldata/:id',async(req,res)=>{
+const id = req.params.id;
+const query = {_id : new ObjectId(id)}
+const result = await travelDataCollection.findOne(query)
+res.send(result);
+})
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
