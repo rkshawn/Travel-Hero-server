@@ -29,7 +29,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const travelDataCollection = client.db('TravelDB').collection('TravelData')
 
@@ -44,6 +44,7 @@ async function run() {
   app.get('/traveldata',async(req,res)=>{
     const cursor = travelDataCollection.find();
     const result = await cursor.toArray();
+   
     res.send(result)
   })
 
@@ -53,6 +54,13 @@ const id = req.params.id;
 const query = {_id : new ObjectId(id)}
 const result = await travelDataCollection.findOne(query)
 res.send(result);
+})
+
+app.delete('/traveldata/:id', async(req,res)=>{
+  const id = req.params.id;
+  const query = {_id : new ObjectId(id)}
+  const result =await travelDataCollection.deleteOne(query);
+  res.send(result);
 })
 
     // Send a ping to confirm a successful connection
