@@ -56,6 +56,33 @@ const result = await travelDataCollection.findOne(query)
 res.send(result);
 })
 
+//update a data api
+
+app.put('/traveldata/:id',async(req,res)=>{
+  const id = req.params.id;
+  const filter = {_id: new ObjectId(id)}
+  const updatedData = req.body;
+  const options = {upsert:true}
+  const updatedTravelData ={
+   $set:{
+    spotName:updatedData.spotName,
+    countryName:updatedData.countryName,
+    season:updatedData.season,
+    averageCost:updatedData.averageCost,
+    travelDuration:updatedData.travelDuration,
+    totalVisitorPerYear:updatedData.totalVisitorPerYear,
+    email :updatedData.email,
+    name :updatedData.name,
+    shortDescription:updatedData.shortDescription,
+    photoURL:updatedData.photoURL,
+    vehicle:updatedData.vehicle
+   }
+ 
+  }
+  const result = await travelDataCollection.updateOne(filter,updatedTravelData,options)
+  res.send(result)
+})
+
 app.delete('/traveldata/:id', async(req,res)=>{
   const id = req.params.id;
   const query = {_id : new ObjectId(id)}
